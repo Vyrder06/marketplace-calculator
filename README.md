@@ -60,7 +60,7 @@ marketplace-calculator/
 │       └── script.js
 │
 └── database/
-    └── marketplace.db
+    └── marketplace.db 
 ```
 
 ## 📌 Current Status
