@@ -63,7 +63,6 @@ html {
 body {
     margin: 0;
     min-height: 100vh;
-
     display: flex;
     flex-direction: column;
 
@@ -121,6 +120,7 @@ body {
     margin-bottom: 0;
     color: var(--cinza-texto);
     line-height: 1.6;
+    text-align: justify;
 }
 
 /* Área dos três cards de ações */
@@ -136,7 +136,7 @@ body {
 .cards-acoes > section {
     flex: 1 1 250px;
     min-width: 0;
-    padding: var(--espaco-xl);
+    padding: var(--espaco-md);
 
     background-color: var(--verde-agua-suave);
     border-radius: var(--raio-xl);
@@ -146,14 +146,16 @@ body {
 /* Títulos dos cards */
 .cards-acoes h2 {
     margin-top: 0;
-    font-size: var(--fonte-2xl);
+    font-size: var(--fonte-xl);
     color: var(--azul-escuro);
+    text-align: left;
 }
 
 /* Textos dos cards */
 .cards-acoes p {
     color: var(--cinza-texto);
     line-height: 1.6;
+    text-align: justify;
 }
 
 /* Botões */
@@ -207,6 +209,7 @@ button:focus-visible {
 .footer p {
     margin: 0;
     line-height: 1.6;
+    text-align: justify;
 }
 
 /* Telas menores */
@@ -241,4 +244,31 @@ button:focus-visible {
     .footer {
         padding: var(--espaco-lg) var(--espaco-md);
     }
+}
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaco-sm);
+    margin-bottom: var(--espaco-lg);
+}
+
+.campo label {
+    font-weight: var(--peso-semibold);
+}
+
+.campo input,
+.campo select {
+    width: 100%;
+    padding: 12px;
+    border: var(--borda-fina);
+    border-radius: var(--raio-md);
+    background-color: var(--branco);
+    font-family: var(--fonte-principal);
+    font-size: var(--fonte-md);
+}
+
+.campo input:focus,
+.campo select:focus {
+    outline: 2px solid var(--verde-agua-escuro);
+    outline-offset: 2px;
 }
