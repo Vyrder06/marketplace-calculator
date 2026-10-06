@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-tabela_taxas: {
+tabela_taxas = {
     "olx": {
         "taxa_percentual": 0.00,
         "taxa_fixa": 0.00
@@ -27,7 +27,8 @@ tabela_taxas: {
             {"min": 70, "max": 100, "fixa": 8.50},
             {"min": 100, "max": 150, "fixa": 13.50},
             {"min": 150, "max": 300, "fixa": 22.50},
-            {"min": 300, "max": 500, "fixa": 25.00}
+            {"min": 300, "max": 500, "fixa": 25.00},
+            {"min": 500, "max": float("inf"), "fixa": 40.00}
         ],
         "taxa_saque": 3.00
     },
@@ -50,7 +51,7 @@ def calcular_taxas(marketplace, preco, modo="classico"):
     if marketplace == "enjoei":
         regras = tabela_taxas["enjoei"]
 
-        for faixas in regras["faixas"]:
+        for faixa in regras["faixas"]:
             if faixa["min"] < preco <= faixa["max"]:
                 percentual = regras["modos"][modo]["taxa_percentual"]
                 return preco * percentual + faixa["fixa"]
@@ -58,7 +59,7 @@ def calcular_taxas(marketplace, preco, modo="classico"):
     elif marketplace == "shopee":
         regras = tabela_taxas["shopee"]
 
-        for faixas in regras["faixas"]:
+        for faixa in regras["faixas"]:
             if faixa["min"] < preco <= faixa["max"]:
                 return (
                     preco * faixa["percentual"]
@@ -82,15 +83,15 @@ def cadastro():
         preco = float(request.form["preco"])
 
         lucro = preco - custo
-
+        taxa = calcular_taxas(marketplace, preco)
         return render_template(
         "cadastro.html",
         lucro=lucro,
-        nome=nome
+        nome=nome,
+        taxa=taxa
         )
 
     return render_template("cadastro.html")
-
 
 if __name__ == "__main__":
     app.run(debug=True)
