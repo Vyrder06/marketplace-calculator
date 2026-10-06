@@ -80,6 +80,9 @@
                     R$ {{ "%.2f"|format(lucro) }}
                 </p>
             {% endif %}
+            {% if taxa is defined %}
+                <p>Taxa: R$ {{ "%.2f"|format(taxa) }}</p>
+            {% endif %}
 
         </section>
     </main>
