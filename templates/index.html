@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <title>Marketplace Calculator</title>
+</head>
+
+<body>
+
+    <header class="header">
+        <h1>Marketplace Calculator</h1>
+    </header>
+
+    <main class="container">
+
+        <section class="cartao">
+            <h2>Bem-vindo ao Marketplace Calculator</h2>
+
+            <p>
+                O Marketplace Calculator é uma ferramenta que permite calcular
+                o lucro de produtos vendidos em marketplaces. Cadastre seus
+                produtos, calcule suas ofertas e gerencie sua lista de produtos ativos.
+            </p>
+        </section>
+
+        <div class="cards-acoes">
+
+            <section class="welcome">
+                <h2>Cadastre seus produtos e calcule suas ofertas</h2>
+
+                <p>Cadastre aqui seus produtos.</p>
+                <a href="{{ url_for('cadastro') }}">
+                    <button type="button">+ Novo Produto</button>
+                </a>
+            </section>
+
+            <section class="products">
+                <h2>Seus produtos</h2>
+
+                <p>
+                    Veja sua lista de produtos ativos, edite-os e gerencie-os.
+                </p>
+
+                <button type="button">Seus produtos</button>
+            </section>
+
+            <section class="calcular">
+                <h2>Calcule suas ofertas</h2>
+
+                <p>Calcule as ofertas recebidas e veja seu lucro.</p>
+
+                <button type="button">Calcular ofertas</button>
+            </section>
+
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <h2>Marketplace Calculator</h2>
+
+        <p>
+            © 2026 Marketplace Calculator. Todos os direitos reservados.
+        </p>
+    </footer>
+
+</body>
+</html>
