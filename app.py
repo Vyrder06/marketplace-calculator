@@ -84,11 +84,13 @@ def cadastro():
 
         lucro = preco - custo
         taxa = calcular_taxas(marketplace, preco)
+        receber = preco - taxa
         return render_template(
         "cadastro.html",
         lucro=lucro,
         nome=nome,
-        taxa=taxa
+        taxa=taxa,
+        receber=receber
         )
 
     return render_template("cadastro.html")
