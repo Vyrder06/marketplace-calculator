@@ -83,7 +83,7 @@ def cadastro():
         preco = float(request.form["preco"])
 
         lucro = preco - custo
-        taxa = calcular_taxas(marketplace, preco)
+        taxa = calcular_taxas(marketplace, preco, modo=request.form.get("modo-enjoei", "classico"))
         receber = preco - taxa
         return render_template(
         "cadastro.html",
@@ -94,6 +94,12 @@ def cadastro():
         )
 
     return render_template("cadastro.html")
+
+@app.route("/ofertas", methods=["GET", "POST"])
+def ofertas():
+    if request.method == "POST":
+        pass
+    return render_template("ofertas.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

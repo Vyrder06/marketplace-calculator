@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculo de Taxas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header class="header">
+        <a href="{{ url_for('home') }}" class="home" title="Voltar para a página inicial">
+            <h1>Marketplace Calculator</h1>
+        </a>
+    </header>
+
+    <main class="container">
+    
+        <section class="cartao">
+            <h2>Calcular Taxas de Ofertas</h2>
+            <p>Preencha os dados do produto para calcular se a oferta é rentável.</p>
+
+
+            <form action="/ofertas" method="POST">
+
+                <div class="campo">
+                    <label for="nome">Selecione o produto:</label>
+                    <form action="/ofertas" method="POST">
+                        <select id="nome" name="nome" required>
+                            <option value="">Selecione um produto</option>
+                            {% for produto in produtos %}
+                                <option value="{{ produto.nome }}">{{ produto.nome }}</option>
+                            {% endfor %}
+                        </select>
+                </div>
+</body>
+</html>

@@ -10,7 +10,9 @@
 <body>
 
     <header class="header">
-        <h1>Marketplace Calculator</h1>
+        <a href="{{ url_for('home') }}" class="home" title="Voltar para a página inicial">
+            <h1>Marketplace Calculator</h1>
+        </a>
     </header>
 
     <main class="container">
@@ -56,6 +58,13 @@
                         <option value="facebook">Facebook</option>
                     </select>
                 </div>
+                <div id="campo-modo-enjoei" style="display: none;">
+                    <label for="modo-enjoei">Tipo de anúncio no Enjoei:</label>
+                        <select id="modo-enjoei" name="modo-enjoei">
+                            <option value="classico">Clássico</option>
+                            <option value="turbinado">Turbinado</option>
+                        </select>
+                </div>
 
                 <div class="campo">
                     <label for="preco">Preço de venda desejado (R$):</label>
@@ -73,17 +82,21 @@
                 <button type="submit">Cadastrar produto</button>
 
             </form>
-            {% if lucro is defined %}
-                <h2>Resultado do cálculo</h2>
-                <p>Produto: {{ nome }}</p>
-                <p>Lucro antes das taxas:
-                    R$ {{ "%.2f"|format(lucro) }}
-                </p>
-            {% endif %}
-            {% if taxa is defined %}
-                <p>Taxa: R$ {{ "%.2f"|format(taxa) }}</p>
-                <p>Valor a receber: R$ {{ "%.2f"|format(receber) }}</p>
-            {% endif %}
+            <div class="resultado">
+                {% if lucro is defined %}
+                    <h2>Resultado do cálculo</h2>
+                    <p>Produto: {{ nome }}</p>
+                    <p>Lucro antes das taxas:
+                        R$ {{ "%.2f"|format(lucro) }}
+                    </p>
+
+                {% endif %}
+                {% if taxa is defined %}
+                    <p>Taxa: R$ {{ "%.2f"|format(taxa) }}</p>
+                    <p>Valor a receber: R$ {{ "%.2f"|format(receber) }}</p>
+                    <button type="submit">Enviar produto para Tabela</button>
+                {% endif %}
+            </div>
 
         </section>
     </main>
@@ -92,7 +105,6 @@
         <h2>Marketplace Calculator</h2>
         <p>© 2026 Marketplace Calculator. Todos os direitos reservados.</p>
     </footer>
-
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
-```

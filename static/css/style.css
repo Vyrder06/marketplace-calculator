@@ -272,3 +272,14 @@ button:focus-visible {
     outline: 2px solid var(--verde-agua-escuro);
     outline-offset: 2px;
 }
+.home {
+    text-decoration: none;
+    color: inherit;
+}
+.resultado p {
+    margin: 0;
+    font-size: var(--fonte-md);
+    color: var(--verde-petroleo);
+    margin-top: var(--espaco-sm);
+    padding: var(--espaco-sm) 0;
+}
