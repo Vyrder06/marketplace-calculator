@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+import math
 
 app = Flask(__name__)
 
@@ -68,6 +69,33 @@ def calcular_taxas(marketplace, preco, modo="classico"):
                 )
     raise ValueError("Marketplace ou faixa de preço inválida.")
 
+def vender_por(marketplace, preco, modo="classico"):
+    marketplace = marketplace.strip().lower()
+
+    if marketplace in ("olx", "facebook"):
+        return preco
+    if marketplace == "enjoei":
+        regras = tabela_taxas["enjoei"]
+        percentual = regras["modos"][modo]["taxa_percentual"]
+        for faixa in regras["faixas"]:
+            taxa_fixa = faixa["fixa"]
+
+            valor_vender = (preco + taxa_fixa) / (1 - percentual)
+            if faixa["min"] < valor_vender <= faixa["max"]:
+                return math.ceil(valor_vender * 100) / 100
+    elif marketplace == "shopee":
+        regras = tabela_taxas["shopee"]
+        for faixa in regras["faixas"]:
+            taxa_fixa = faixa["fixa"]
+            percentual = faixa["percentual"]
+
+            valor_vender = (preco + taxa_fixa + regras["taxa_cpf"]) / (1 - percentual)
+            if faixa["min"] < valor_vender <= faixa["max"]:
+                return math.ceil(valor_vender * 100) / 100
+
+    raise ValueError("Marketplace ou faixa de preço inválida.")
+
+
 
 @app.route("/")
 def home():
@@ -83,14 +111,17 @@ def cadastro():
         preco = float(request.form["preco"])
 
         lucro = preco - custo
-        taxa = calcular_taxas(marketplace, preco, modo=request.form.get("modo-enjoei", "classico"))
+        modo = request.form.get("modo_enjoei", "classico")
+        taxa = calcular_taxas(marketplace, preco, modo)
         receber = preco - taxa
+        valor_vender = vender_por(marketplace, preco, modo)
         return render_template(
         "cadastro.html",
         lucro=lucro,
         nome=nome,
         taxa=taxa,
-        receber=receber
+        receber=receber,
+        valor_vender=valor_vender
         )
 
     return render_template("cadastro.html")

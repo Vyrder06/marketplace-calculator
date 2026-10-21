@@ -283,3 +283,77 @@ button:focus-visible {
     margin-top: var(--espaco-sm);
     padding: var(--espaco-sm) 0;
 }
+
+/* Opções de anúncio do Enjoei */
+.campo-modo-enjoei {
+    display: none;
+    margin-top: 20px;
+}
+
+.label-modo {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.opcoes-enjoei {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.cartao-enjoei {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+
+.cartao-enjoei input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.conteudo-cartao {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px;
+    border: 2px solid var(--cinza-borda);
+    border-radius: 12px;
+    background: var(--branco);
+    transition: border-color 0.2s, background-color 0.2s,
+                transform 0.2s;
+}
+
+.nome-modo {
+    color: var(--cinza-texto);
+    font-weight: 600;
+}
+
+.taxa-modo {
+    color: var(--verde-petroleo);
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.descricao-modo {
+    color: var(--cinza-texto);
+    font-size: 12px;
+}
+
+.cartao-enjoei:hover .conteudo-cartao {
+    border-color: var(--verde-agua-escuro);
+    transform: translateY(-2px);
+}
+
+.cartao-enjoei input:checked + .conteudo-cartao {
+    border-color: var(--verde-agua-escuro);
+    background: var(--verde-agua-suave);
+}
+
+.cartao-enjoei input:focus-visible + .conteudo-cartao {
+    outline: 2px solid var(--verde-petroleo);
+    outline-offset: 3px;
+}
+

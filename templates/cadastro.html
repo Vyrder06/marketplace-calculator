@@ -58,12 +58,39 @@
                         <option value="facebook">Facebook</option>
                     </select>
                 </div>
-                <div id="campo-modo-enjoei" style="display: none;">
-                    <label for="modo-enjoei">Tipo de anúncio no Enjoei:</label>
-                        <select id="modo-enjoei" name="modo-enjoei">
-                            <option value="classico">Clássico</option>
-                            <option value="turbinado">Turbinado</option>
-                        </select>
+                <div id="campo-modo-enjoei" class="campo-modo-enjoei">
+                    <label class="label-modo">Tipo de anúncio Enjoei</label>
+
+                    <div class="opçoes-enjoei">
+                        <label class="cartao-enjoei">
+                            <input 
+                            type="radio" 
+                            name="modo_enjoei" 
+                            value="classico" 
+                            checked
+                        >
+                        
+                        <span class="conteudo-cartao">
+                            <span class="nome-modo">Clássico</span>
+                            <span class="taxa-modo">12%</span>
+                            <span class="descricao-modo">Taxa percentual</span>
+                        </span>
+                    </label>
+                    <label class="cartao-enjoei">
+                        <input 
+                            type="radio" 
+                            name="modo_enjoei" 
+                            value="turbinado"
+                        >
+                        
+                        <span class="conteudo-cartao">
+                            <span class="nome-modo">Turbinado</span>
+                            <span class="taxa-modo">18%</span>
+                            <span class="descricao-modo">Taxa percentual</span>
+                        </span>
+                    </div>
+                </div>
+                    
                 </div>
 
                 <div class="campo">
@@ -94,6 +121,7 @@
                 {% if taxa is defined %}
                     <p>Taxa: R$ {{ "%.2f"|format(taxa) }}</p>
                     <p>Valor a receber: R$ {{ "%.2f"|format(receber) }}</p>
+                    <p>Valor a vender: R$ {{ "%.2f"|format(valor_vender) }}</p>
                     <button type="submit">Enviar produto para Tabela</button>
                 {% endif %}
             </div>

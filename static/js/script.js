@@ -1,13 +1,12 @@
-const marketplaceSelect = document.getElementById("marketplace");
-const campoModoEnjoei = document.getElementById("campo-modo-enjoei");
-const modoEnjoeiSelect = document.getElementById("modo-enjoei");
+const marketplace = document.getElementById('marketplace');
+const campoModoEnjoei = document.getElementById('campo-modo-enjoei');
 
-marketplaceSelect.addEventListener("change", function () {
-    if (marketplaceSelect.value === "enjoei") {
-        campoModoEnjoei.style.display = "block";
-        modoEnjoeiSelect.required = true;
-    } else {
-        campoModoEnjoei.style.display = "none";
-        modoEnjoeiSelect.required = false;
-    }
-});
+function atualizarModoEnjoei() {
+    const ehEnjoei = marketplace.value === 'enjoei';
+
+    campoModoEnjoei.style.display = ehEnjoei ? 'block' : 'none';
+}
+
+marketplace.addEventListener('change', atualizarModoEnjoei);
+
+atualizarModoEnjoei();
