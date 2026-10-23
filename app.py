@@ -3,17 +3,8 @@ import math
 import sqlite3
 from pathlib import Path
 
-BANCO = Path(__file__).with_name("marketplace.db")
-ARQUIVO_SQL = Path(__file__).with_name("database.sql")
-
-
 
 app = Flask(__name__)
-
-def criar_tabela():
-    with sqlite3.connect(BANCO) as conexao:
-        comandos = ARQUIVO_SQL.read_text(encoding="utf-8")
-        conexao.executescript(comandos)
 
 
 tabela_taxas = {
@@ -80,7 +71,8 @@ def calcular_taxas(marketplace, preco, modo="classico"):
                     + faixa["fixa"]
                     +regras["taxa_cpf"]
                 )
-    raise ValueError("Marketplace ou faixa de preço inválida.")
+    
+
 
 def vender_por(marketplace, preco, modo="classico"):
     marketplace = marketplace.strip().lower()
@@ -137,35 +129,12 @@ def cadastro():
                 preco=preco,
                 taxa=taxa,
                 modo=modo,
-                receber=receber
+                receber=receber,
+                lucro=lucro,
+                valor_vender=valor_vender
                 )
 
     return render_template("cadastro.html")
-
-@app.route("/salvar-produto", methods=["POST"])
-def salvar_produto():
-    nome = request.form["nome"]
-    custo = float(request.form["custo"])
-    marketplace = request.form["marketplace"]
-    preco = float(request.form["preco"])
-    taxa = float(request.form["taxa"])
-    modo = request.form.get("modo", "classico")
-    receber = float(request.form["receber"])
-
-    return render_template(
-        "cadastro.html",
-        nome=nome,
-        custo=custo,
-        marketplace=marketplace,
-        preco=preco,
-        taxa=taxa,
-        modo=modo,
-        receber=receber
-        )
-
-
-
-
 
 
 @app.route("/ofertas", methods=["GET", "POST"])
@@ -175,7 +144,6 @@ def ofertas():
     return render_template("ofertas.html")
 
 if __name__ == "__main__":
-    criar_tabela()
     app.run(debug=True)
 
 
