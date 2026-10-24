@@ -71,14 +71,16 @@ def calcular_taxas(marketplace, preco, modo="classico"):
                     + faixa["fixa"]
                     +regras["taxa_cpf"]
                 )
+    raise ValueError ("O Marketplace e o preço devem ser valores usáveis.")
     
 
 
 def vender_por(marketplace, preco, modo="classico"):
     marketplace = marketplace.strip().lower()
 
+
     if marketplace in ("olx", "facebook"):
-        return preco
+        return preco 
     if marketplace == "enjoei":
         regras = tabela_taxas["enjoei"]
         percentual = regras["modos"][modo]["taxa_percentual"]
@@ -88,7 +90,7 @@ def vender_por(marketplace, preco, modo="classico"):
             valor_vender = (preco + taxa_fixa) / (1 - percentual)
             if faixa["min"] < valor_vender <= faixa["max"]:
                 return math.ceil(valor_vender * 100) / 100
-    elif marketplace == "shopee":
+    elif marketplace == "shopee": 
         regras = tabela_taxas["shopee"]
         for faixa in regras["faixas"]:
             taxa_fixa = faixa["fixa"]
@@ -98,7 +100,7 @@ def vender_por(marketplace, preco, modo="classico"):
             if faixa["min"] < valor_vender <= faixa["max"]:
                 return math.ceil(valor_vender * 100) / 100
 
-    raise ValueError("Marketplace ou faixa de preço inválida.")
+    raise ValueError ("Marketplace e/ou preço inválido!")
 
 
 
@@ -110,17 +112,23 @@ def home():
 @app.route("/cadastro", methods=["GET", "POST"])
 def cadastro():
     if request.method == "POST":
-        nome = request.form["nome"]
-        custo = float(request.form["custo"])
-        marketplace = request.form["marketplace"]
-        preco = float(request.form["preco"])
+        try:
+                nome = request.form["nome"]
+                custo = float(request.form["custo"])
+                marketplace = request.form["marketplace"]
+                preco = float(request.form["preco"])
+        
 
-        lucro = preco - custo
-        modo = request.form.get("modo_enjoei", "classico")
-        taxa = calcular_taxas(marketplace, preco, modo)
-        receber = preco - taxa
-        valor_vender = vender_por(marketplace, preco, modo)
-
+                lucro = preco - custo
+                modo = request.form.get("modo_enjoei", "classico")
+                taxa = calcular_taxas(marketplace, preco, modo)
+                receber = preco - taxa
+                valor_vender = vender_por(marketplace, preco, modo)
+        except ValueError:
+            return render_template(
+                "cadastro.html",
+                erro= "Confira os valores: o preço deve ser maior que zero."
+            )
         return render_template(
                 "cadastro.html",
                 nome=nome,

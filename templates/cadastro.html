@@ -61,7 +61,7 @@
                 <div id="campo-modo-enjoei" class="campo-modo-enjoei">
                     <label class="label-modo">Tipo de anúncio Enjoei</label>
 
-                    <div class="opçoes-enjoei">
+                    <div class="opcoes-enjoei">
                         <label class="cartao-enjoei">
                             <input 
                             type="radio" 
@@ -88,9 +88,8 @@
                             <span class="taxa-modo">18%</span>
                             <span class="descricao-modo">Taxa percentual</span>
                         </span>
+                    </label>
                     </div>
-                </div>
-                    
                 </div>
 
                 <div class="campo">
@@ -121,22 +120,12 @@
                 {% if taxa is defined %}
                     <p>Taxa: R$ {{ "%.2f"|format(taxa) }}</p>
                     <p>Valor a receber: R$ {{ "%.2f"|format(receber) }}</p>
-                    <p>Valor a vender: R$ {{ "%.2f"|format(valor_vender) }}</p>
-                    
-
-                    <form action="/salvar-produto" method="POST">
-                        <input type="hidden" name="nome" value="{{ nome }}">
-                        <input type="hidden" name="custo" value="{{ custo }}">
-                        <input type="hidden" name="marketplace" value="{{ marketplace }}">
-                        <input type="hidden" name="preco" value="{{ preco }}">
-                        <input type="hidden" name="modo" value="{{ modo }}">
-
-                        <button type="submit">Enviar produto para Tabela</button>
-                    </form>
                 {% endif %}
-
-                {% if salvo %}
-                    <p class="mensagem-sucesso">Produto salvo na tabela!</p>
+                {% if taxa is defined %}
+                    <p>Valor para vender: R$ {{ "%.2f"|format(valor_vender) }}</p>
+                {% endif %}
+                {% if erro %}
+                    <p>Erro! {{(erro)}}</p>
                 {% endif %}
             </div>
 
