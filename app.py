@@ -151,6 +151,10 @@ def ofertas():
         pass
     return render_template("ofertas.html")
 
+@app.route("/produtos")
+def seus_produtos():
+    return render_template("produtos.html")
+
 if __name__ == "__main__":
     app.run(debug=True)
 
