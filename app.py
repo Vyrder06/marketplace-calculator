@@ -1,8 +1,12 @@
+from contextlib import closing
+
 from flask import Flask, render_template, request
 import math
 import sqlite3
 from pathlib import Path
 
+BANCO = Path(__file__).with_name("marketplace.db")
+ARQUIVO_SQL = Path(__file__).with_name("database.sql")
 
 app = Flask(__name__)
 
@@ -102,47 +106,25 @@ def vender_por(marketplace, preco, modo="classico"):
 
     raise ValueError ("Marketplace e/ou preço inválido!")
 
+def criar_tabela():
+    with closing(sqlite3.connect(BANCO)) as conexao:
+        conexao.executescript(ARQUIVO_SQL.read_text(encoding="utf-8"))
 
+criar_tabela()
+
+FILTROS = {"todos": None, "vendido": 1, "nao_vendido": 0}
+
+CONSULTA = """
+SELECT id, nome, enjoei, olx, facebook, shopee, vendido
+FROM produtos
+WHERE nome LIKE :busca
+  AND (:vendido IS NULL OR vendido = :vendido)
+ORDER BY nome
+"""
 
 @app.route("/")
 def home():
     return render_template("index.html")
-
-
-@app.route("/cadastro", methods=["GET", "POST"])
-def cadastro():
-    if request.method == "POST":
-        try:
-                nome = request.form["nome"]
-                custo = float(request.form["custo"])
-                marketplace = request.form["marketplace"]
-                preco = float(request.form["preco"])
-        
-
-                lucro = preco - custo
-                modo = request.form.get("modo_enjoei", "classico")
-                taxa = calcular_taxas(marketplace, preco, modo)
-                receber = preco - taxa
-                valor_vender = vender_por(marketplace, preco, modo)
-        except ValueError:
-            return render_template(
-                "cadastro.html",
-                erro= "Confira os valores: o preço deve ser maior que zero."
-            )
-        return render_template(
-                "cadastro.html",
-                nome=nome,
-                custo=custo,
-                marketplace=marketplace,
-                preco=preco,
-                taxa=taxa,
-                modo=modo,
-                receber=receber,
-                lucro=lucro,
-                valor_vender=valor_vender
-                )
-
-    return render_template("cadastro.html")
 
 
 @app.route("/ofertas", methods=["GET", "POST"])
@@ -153,7 +135,13 @@ def ofertas():
 
 @app.route("/produtos")
 def seus_produtos():
-    return render_template("produtos.html")
+    filtro = request.args.get("filtro", "todos")
+    vendido = FILTROS.get(filtro)
+    busca = "%" + request.args.get("busca", "") + "%"
+    with closing(sqlite3.connect(BANCO)) as conexao:
+        conexao.row_factory = sqlite3.Row
+        produtos = conexao.execute(CONSULTA, {"busca": busca, "vendido": vendido}).fetchall()
+    return render_template("produtos.html", produtos=produtos, filtro=filtro)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -356,4 +356,63 @@ button:focus-visible {
     outline: 2px solid var(--verde-petroleo);
     outline-offset: 3px;
 }
+/* Tabela de produtos */
+.tabela-rolagem {
+    margin: var(--espaco-lg) 0;
+    overflow-x: auto;
+    background-color: var(--branco);
+    border: var(--borda-fina);
+    border-radius: var(--raio-md);
+}
 
+.tabela-produtos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fonte-sm);
+}
+
+.tabela-produtos th,
+.tabela-produtos td {
+    padding: 12px 16px;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: var(--borda-fina);
+}
+
+.tabela-produtos th {
+    background-color: var(--cinza-claro);
+    color: var(--cinza-texto);
+    font-weight: var(--peso-semibold);
+}
+
+.tabela-produtos tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabela-produtos tbody tr:hover {
+    background-color: var(--verde-agua-suave);
+}
+
+.tabela-produtos .vazio {
+    text-align: center;
+    color: var(--cinza-texto);
+    padding: var(--espaco-xl);
+}
+
+.selo {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: var(--raio-redondo);
+    font-size: var(--fonte-xs);
+    font-weight: var(--peso-semibold);
+}
+
+.selo-venda {
+    background-color: var(--verde-agua-claro);
+    color: var(--verde-petroleo);
+}
+
+.selo-vendido {
+    background-color: var(--cinza-claro);
+    color: var(--cinza-texto);
+}

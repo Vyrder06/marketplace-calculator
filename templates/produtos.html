@@ -1,11 +1,70 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seus Proutos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Seus produtos</title>
 </head>
 <body>
-    <p> Can we pretend that airplanes in the night sky are shooting stars</p>
+
+
+    <header class="header">
+        <a href="{{ url_for('home') }}" class="home" title="Voltar para a página inicial">
+            <h1>Marketplace Calculator</h1>
+        </a>
+    </header>
+
+    <main class="container">
+
+        <section class="cartao">
+            <h2>Seus produtos</h2>
+            <p>Veja os produtos cadastrados e o preço de cada um nas lojas.</p>
+
+            <button type = "button">
+                <a href="{{ url_for('seus_produtos', filtro='todos') }}">Todos</a>
+            </button>
+            <button type = "button">
+                <a href="{{ url_for('seus_produtos', filtro='vendido') }}">Vendidos</a>
+            </button>
+            <button type = "button">
+                <a href="{{ url_for('seus_produtos', filtro='venda') }}">À venda</a>
+            </button>
+            <div class="tabela-rolagem">
+                <table class="tabela-produtos">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>OLX</th>
+                            <th>Enjoei</th>
+                            <th>Facebook</th>
+                            <th>Shopee</th>
+                            <th>Vendido</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for p in produtos %}
+                                <span class="selo {{ 'selo-vendido' if p['vendido'] else 'selo-venda' }}">
+                                    {{ "Vendido" if p["vendido"] else "À venda" }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="vazio">Nenhum produto cadastrado ainda.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <h2>Marketplace Calculator</h2>
+        <p>© 2026 Marketplace Calculator. Todos os direitos reservados.</p>
+    </footer>
+
 </body>
 </html>
