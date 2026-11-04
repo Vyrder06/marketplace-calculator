@@ -416,3 +416,112 @@ button:focus-visible {
     background-color: var(--cinza-claro);
     color: var(--cinza-texto);
 }
+
+/* Filtros */
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 20px 0;
+}
+
+.botao-filtro {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: var(--verde-agua);
+    color: var(--verde-petroleo);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.botao-filtro:hover,
+.botao-filtro.ativo {
+    background-color: var(--verde-petroleo);
+    color: white;
+}
+
+/* Área da tabela */
+.tabela-rolagem {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+    border-radius: 8px;
+}
+
+/* Tabela */
+.tabela-produtos {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    min-width: 750px;
+}
+
+/* Cabeçalho */
+.tabela-produtos thead {
+    background-color: var(--verde-petroleo);
+    color: white;
+}
+
+.tabela-produtos th {
+    padding: 14px 16px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+/* Linhas e células */
+.tabela-produtos td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--cinza-borda);
+    white-space: nowrap;
+}
+
+.tabela-produtos tbody tr:nth-child(even) {
+    background-color: var(--verde-agua-suave);
+}
+
+.tabela-produtos tbody tr:hover {
+    background-color: var(--verde-agua-claro);
+}
+
+/* Nome do produto */
+.nome-produto {
+    font-weight: 600;
+    min-width: 220px;
+    white-space: normal !important;
+}
+
+/* Status */
+.selo {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.selo-vendido {
+    background-color: #E8EEF5;
+    color: #53677F;
+}
+
+.selo-venda {
+    background-color: var(--verde-agua-claro);
+    color: var(--verde-petroleo);
+}
+
+/* Nenhum produto */
+.vazio {
+    text-align: center;
+    padding: 30px !important;
+}
+
+/* Contador */
+.contador-produtos {
+    margin-top: 15px;
+    font-size: 14px;
+    color: var(--cinza-texto);
+}
+input.salvo { border-color: var(--verde-agua-escuro); }
+input.erro  { border-color: #B3261E; }
