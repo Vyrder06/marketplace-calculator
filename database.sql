@@ -14,3 +14,4 @@ WHERE nome LIKE :busca
   AND (:vendido IS NULL OR vendido = :vendido)
 ORDER BY nome;
 
+UPDATE produtos SET vendido = 1 - vendido WHERE id = ?

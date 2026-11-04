@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="container">
+        <section class="cartao">
+
+            <h2>Login</h2>
+
+            <p>Faça login para acessar seus produtos.</p>
+
+            <form method="post" class="form-linha">
+                <input type="text" name="usuario" placeholder="Usuário" required>
+                <input type="password" name="senha" placeholder="Senha" required>
+                <button type="submit">Entrar</button>
+            </form>
+            {% if erro %}
+                <p class="erro">{{ erro }}</p>
+            {% endif %}
+
+        </section>
+    </main>
+</body>
+</html>

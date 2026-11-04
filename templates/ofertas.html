@@ -12,6 +12,9 @@
         <a href="{{ url_for('home') }}" class="home" title="Voltar para a página inicial">
             <h1>Marketplace Calculator</h1>
         </a>
+         <form method='post' action='{{ url_for("sair") }}'>
+            <button type='submit'>Sair</button>
+        </form>
     </header>
 
     <main class="container">

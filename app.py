@@ -1,13 +1,29 @@
 from contextlib import closing
-from flask import Flask, render_template, request, redirect, url_for
-import math
+from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
+import os
 from pathlib import Path
 
-BANCO = Path(__file__).with_name("marketplace.db")
-ARQUIVO_SQL = Path(__file__).with_name("database.sql")
+from dotenv import load_dotenv
+from werkzeug.security import check_password_hash
+
+load_dotenv()
+
+BASE = Path(__file__).resolve().parent
+load_dotenv(BASE / ".env")
+
+BANCO = BASE / "marketplace.db"
+ARQUIVO_SQL = BASE / "database.sql"
 
 app = Flask(__name__)
+app.secret_key = os.environ["SECRET_KEY"]
+app.config.update(
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=os.environ.get("PRODUCAO") == "1"
+)
+
+USUARIO = os.environ["LOGIN_USUARIO"]
+SENHA_HASH = os.environ["LOGIN_SENHA_HASH"]
 
 CAMPOS_EDITAVEIS = {"nome", "olx", "enjoei", "facebook", "shopee"}
 
@@ -16,6 +32,39 @@ def criar_tabela():
         conexao.executescript(ARQUIVO_SQL.read_text(encoding="utf-8"))
 
 criar_tabela()
+
+@app.before_request
+def exigir_login():
+    if request.endpoint in ["login", "static"]:
+        return
+    if "usuario" not in session:
+        if request.is_json:
+            return {"erro": "Sua sessão expirou. Entre de novo"}, 401
+        return redirect(url_for("login"))
+
+@app.route("/", methods=["GET", "POST"])
+def login():
+    if "usuario" in session:
+        return redirect(url_for("home"))
+    erro = None
+    if request.method == "POST":
+        usuario = request.form.get("usuario", "").strip()
+        senha = request.form.get("senha", "").strip()
+
+        if usuario == USUARIO and check_password_hash(SENHA_HASH, senha):
+            session["usuario"] = usuario
+            return redirect(url_for("home"))
+        erro = "Usuário ou senha inválidos"
+    return render_template("login.html", erro=erro)
+
+@app.route("/sair", methods=["POST"])
+def sair():
+    session.clear()
+    return redirect(url_for("login"))
+
+@app.route("/home")
+def home():
+    return render_template("index.html")
 
 FILTROS = {
     "todos": None,
@@ -31,10 +80,6 @@ WHERE nome LIKE :busca
   AND (:vendido IS NULL OR vendido = :vendido)
 ORDER BY nome COLLATE NOCASE
 """
-
-@app.route("/")
-def home():
-    return render_template("index.html")
 
 
 @app.route("/ofertas", methods=["GET", "POST"])
@@ -69,7 +114,8 @@ def seus_produtos():
         "produtos.html",
         produtos=produtos,
         filtro=filtro,
-        busca=busca
+        busca=busca,
+        erro=request.args.get("erro")
     )
 
 @app.route("/produtos/<int:produto_id>/excluir", methods=["POST"])
@@ -130,6 +176,15 @@ def atualizar_campo(produto_id):
         return {"erro": "valor nao permitido"}, 400
     
     return{"ok": True}
+
+@app.route("/produtos/<int:produto_id>/alternar_vendido", methods=["POST"])
+def alternar_vendido(produto_id):
+    with closing(sqlite3.connect(BANCO)) as conexao:
+        conexao.execute("UPDATE produtos SET vendido = 1 - vendido WHERE id = ?", (produto_id,))
+        conexao.commit()
+    return redirect(url_for("seus_produtos", 
+                            busca=request.form.get("busca") or None,
+                            filtro=request.form.get("filtro") or None))
 
 if __name__ == "__main__":
     app.run(debug=True)

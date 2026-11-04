@@ -7,7 +7,7 @@
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
-
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <title>Seus produtos</title>
 </head>
 
@@ -19,6 +19,9 @@
            title="Voltar para a página inicial">
             <h1>Marketplace Calculator</h1>
         </a>
+        <form method='post' action='{{ url_for("sair") }}'>
+            <button type='submit'>Sair</button>
+        </form>
     </header>
 
     <main class="container">
@@ -49,7 +52,7 @@
 
             </nav>
           
-                <form method="get" action="{{ url_for('seus_produtos') }}">
+                <form method="get" action="{{ url_for('seus_produtos') }}" class="form-linha">
                     <input type="text" name="busca" value="{{ busca }}" placeholder="Pesquisar por titulo">
                     <button type="submit">Pesquisar</button>
                     <a href="{{ url_for('seus_produtos') }}"
@@ -60,9 +63,9 @@
             
             {% if erro %}<p class="erro">{{ erro }}</p>{% endif %}
 
-            <form method="post" action="{{ url_for('adicionar_produto') }}">
+            <form method="post" action="{{ url_for('adicionar_produto') }}" class="form-linha">
                 <input type="text" name="nome" placeholder="Produto" required>
-                <input type="number" name="olx" placeholder="OLX" min="" step="any">
+                <input type="number" name="olx" placeholder="OLX" min="0" step="any">
                 <input type="number" name="enjoei" placeholder="Enjoei" min="0" step="any">
                 <input type="number" name="facebook" placeholder="Facebook" min="0" step="any">
                 <input type="number" name="shopee" placeholder="Shopee" min="0" step="any">
@@ -93,44 +96,49 @@
                         <tr>
                             
                             <td class="nome-produto">
-                                {{ p["nome"] }}
+                                {{ p["nome"] | title }}
                             </td>
                            
                             <td>
-                                <input type="number" step="any" min=""
+                                <input type="number" step="any" min="0"
                                     value="{{ p['olx'] if p['olx'] is not none else '' }}"
                                     data-id="{{ p['id'] }}" data-campo="olx" onchange="salvarCampo(this)">
                             </td>
 
 
                             <td>
-                                 <input type="number" step="any" min=""
+                                 <input type="number" step="any" min="0"
                                     value="{{ p['enjoei'] if p['enjoei'] is not none else '' }}"
                                     data-id="{{ p['id'] }}" data-campo="enjoei" onchange="salvarCampo(this)">
                             </td>
 
                             <td>
-                                 <input type="number" step="any" min=""
+                                 <input type="number" step="any" min="0"
                                     value="{{ p['facebook'] if p['facebook'] is not none else '' }}"
                                     data-id="{{ p['id'] }}" data-campo="facebook" onchange="salvarCampo(this)">
                             </td>
 
                             <td>
-                                 <input type="number" step="any" min=""
+                                 <input type="number" step="any" min="0"
                                     value="{{ p['shopee'] if p['shopee'] is not none else '' }}"
                                     data-id="{{ p['id'] }}" data-campo="shopee" onchange="salvarCampo(this)">
                             </td>
 
                             <td>
-                                <span class="selo {{ 'selo-vendido' if p['vendido'] else 'selo-venda' }}">
-                                    {{ "Vendido" if p["vendido"] else "À venda" }}
-                                </span>
+                                <form method="post" action="{{ url_for('alternar_vendido', produto_id=p['id']) }}">
+                                    <input type="hidden" name="busca" value="{{ busca }}">
+                                    <input type="hidden" name="filtro" value="{{ filtro }}">
+                                    <button type="submit" class="{{ 'selo-vendido' if p['vendido'] else 'selo-venda' }}">
+                                        {{ "Vendido" if p["vendido"] else "À venda" }}
+                                    </button>
+                                </form>
                             </td>
 
                              <td>
                                 <form method="post" action="{{ url_for('excluir_produto', produto_id=p['id']) }}"
                                     onsubmit="return confirm('Apagar este produto?')">
                                     <input type="hidden" name="busca" value="{{ busca }}">
+                                    <input type='hidden' name='filtro' value='{{ filtro }}'>
                                     <button type="submit">X</button>
                                 </form>
                             </td>
@@ -140,7 +148,7 @@
                         {% else %}
 
                         <tr>
-                            <td colspan="6" class="vazio">
+                            <td colspan="7" class="vazio">
                                 Nenhum produto encontrado.
                             </td>
                         </tr>
