@@ -1,14 +1,18 @@
 CREATE TABLE IF NOT EXISTS produtos (
-    id       INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome     TEXT    NOT NULL UNIQUE COLLATE NOCASE,
-    enjoei   REAL    CHECK (enjoei   > 0),
-    olx      REAL    CHECK (olx      > 0),
-    facebook REAL    CHECK (facebook > 0),
-    shopee   REAL    CHECK (shopee   > 0),
-    vendido  INTEGER NOT NULL DEFAULT 0 CHECK (vendido IN (0, 1))
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome            TEXT    NOT NULL UNIQUE COLLATE NOCASE,
+    enjoei          REAL    CHECK (enjoei   > 0),
+    olx             REAL    CHECK (olx      > 0),
+    facebook        REAL    CHECK (facebook > 0),
+    shopee          REAL    CHECK (shopee   > 0),
+    vendido         INTEGER NOT NULL DEFAULT 0 CHECK (vendido IN (0, 1)),
+    loja_vendida    TEXT    CHECK (loja_vendida IN ('olx', 'enjoei', 'facebook', 'shopee')),
+    preco_venda     REAL    CHECK (preco_venda > 0),
+    modo_enjoei     TEXT    CHECK (modo_enjoei IN ('classico', 'turbinado')),
+    valor_liquido   REAL
 );
 
-SELECT id, nome, enjoei, olx, facebook, shopee, vendido
+SELECT id, nome, enjoei, olx, facebook, shopee, vendido, loja_vendida, preco_venda, modo_enjoei, valor_liquido
 FROM produtos
 WHERE nome LIKE :busca
   AND (:vendido IS NULL OR vendido = :vendido)

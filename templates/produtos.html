@@ -102,26 +102,26 @@
                             <td>
                                 <input type="number" step="any" min="0"
                                     value="{{ p['olx'] if p['olx'] is not none else '' }}"
-                                    data-id="{{ p['id'] }}" data-campo="olx" onchange="salvarCampo(this)">
+                                    data-id="{{ p['id'] }}" data-campo="olx" onchange="salvarCampo(this)" class="{{ 'campo-vazio-nao-vendido' if p['olx'] is none and not p['vendido'] else '' }} {{ 'campo-loja-vendida' if p['vendido'] and p['loja_vendida'] == 'olx' else '' }}">
                             </td>
 
 
                             <td>
                                  <input type="number" step="any" min="0"
                                     value="{{ p['enjoei'] if p['enjoei'] is not none else '' }}"
-                                    data-id="{{ p['id'] }}" data-campo="enjoei" onchange="salvarCampo(this)">
+                                    data-id="{{ p['id'] }}" data-campo="enjoei" onchange="salvarCampo(this)" class="{{ 'campo-vazio-nao-vendido' if p['enjoei'] is none and not p['vendido'] else '' }} {{ 'campo-loja-vendida' if p['vendido'] and p['loja_vendida'] == 'enjoei' else '' }}">
                             </td>
 
                             <td>
                                  <input type="number" step="any" min="0"
                                     value="{{ p['facebook'] if p['facebook'] is not none else '' }}"
-                                    data-id="{{ p['id'] }}" data-campo="facebook" onchange="salvarCampo(this)">
+                                    data-id="{{ p['id'] }}" data-campo="facebook" onchange="salvarCampo(this)" class="{{ 'campo-vazio-nao-vendido' if p['facebook'] is none and not p['vendido'] else '' }} {{ 'campo-loja-vendida' if p['vendido'] and p['loja_vendida'] == 'facebook' else '' }}">
                             </td>
 
                             <td>
                                  <input type="number" step="any" min="0"
                                     value="{{ p['shopee'] if p['shopee'] is not none else '' }}"
-                                    data-id="{{ p['id'] }}" data-campo="shopee" onchange="salvarCampo(this)">
+                                    data-id="{{ p['id'] }}" data-campo="shopee" onchange="salvarCampo(this)" class="{{ 'campo-vazio-nao-vendido' if p['shopee'] is none and not p['vendido'] else '' }} {{ 'campo-loja-vendida' if p['vendido'] and p['loja_vendida'] == 'shopee' else '' }}">
                             </td>
 
                             <td>
@@ -173,6 +173,71 @@
         <h2>Marketplace Calculator</h2>
         <p>© 2026 Marketplace Calculator. Todos os direitos reservados.</p>
     </footer>
+
+    {% if modal_venda %}
+    <div class="modal-fundo" role="presentation">
+        <section class="modal-venda" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-venda">
+            <h2 id="titulo-modal-venda">Registrar venda</h2>
+            <p>Informe onde <strong>{{ modal_venda.produto_nome }}</strong> foi vendido e o preço recebido.</p>
+
+            <form method="post" action="{{ url_for('confirmar_venda', produto_id=modal_venda.produto_id) }}"
+                  class="form-modal-venda">
+                <input type="hidden" name="busca" value="{{ modal_venda.busca }}">
+                <input type="hidden" name="filtro" value="{{ modal_venda.filtro }}">
+
+                <label for="loja-vendida">Loja</label>
+                <select id="loja-vendida" name="loja_vendida" required>
+                    <option value="">Selecione uma loja</option>
+                    <option value="olx" data-preco="{{ modal_venda.precos.olx or '' }}">OLX — sem taxas</option>
+                    <option value="enjoei" data-preco="{{ modal_venda.precos.enjoei or '' }}">Enjoei</option>
+                    <option value="facebook" data-preco="{{ modal_venda.precos.facebook or '' }}">Facebook — sem taxas</option>
+                    <option value="shopee" data-preco="{{ modal_venda.precos.shopee or '' }}">Shopee</option>
+                </select>
+
+                <label for="preco-venda">Preço de venda (R$)</label>
+                <input id="preco-venda" name="preco_venda" type="number" min="0.01" step="0.01"
+                       placeholder="Ex.: 50,00" required>
+
+                <div id="opcoes-enjoei" class="opcoes-modal" hidden>
+                    <label for="modo-enjoei">Tipo de anúncio no Enjoei</label>
+                    <select id="modo-enjoei" name="modo_enjoei">
+                        <option value="">Selecione</option>
+                        <option value="classico">Clássico (12%)</option>
+                        <option value="turbinado">Turbinado (18%)</option>
+                    </select>
+                    <small>A estimativa do valor líquido considera também as tarifas informadas e R$ 3,00 de saque.</small>
+                </div>
+
+                <div class="acoes-modal">
+                    <a class="botao-filtro" href="{{ url_for('seus_produtos', busca=modal_venda.busca, filtro=modal_venda.filtro) }}">Cancelar</a>
+                    <button type="submit">Confirmar venda</button>
+                </div>
+            </form>
+        </section>
+    </div>
+    <script>
+        (() => {
+            const loja = document.getElementById("loja-vendida");
+            const opcoesEnjoei = document.getElementById("opcoes-enjoei");
+            const modoEnjoei = document.getElementById("modo-enjoei");
+            const precoVenda = document.getElementById("preco-venda");
+
+            function atualizarCamposVenda() {
+                const enjoeiSelecionado = loja.value === "enjoei";
+                opcoesEnjoei.hidden = !enjoeiSelecionado;
+                modoEnjoei.required = enjoeiSelecionado;
+                if (!enjoeiSelecionado) modoEnjoei.value = "";
+
+                const precoSugerido = loja.selectedOptions[0]?.dataset.preco;
+                precoVenda.value = precoSugerido || "";
+            }
+
+            loja.addEventListener("change", atualizarCamposVenda);
+            atualizarCamposVenda();
+            loja.focus();
+        })();
+    </script>
+    {% endif %}
 
 </body>
 </html>
