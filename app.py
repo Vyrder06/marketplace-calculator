@@ -30,7 +30,7 @@ CAMPOS_EDITAVEIS = {"nome", "olx", "enjoei", "facebook", "shopee"}
 def criar_tabela():
     with closing(sqlite3.connect(BANCO)) as conexao:
         conexao.executescript(ARQUIVO_SQL.read_text(encoding="utf-8"))
-    # Migração: adicionar colunas se não existirem
+   
     with closing(sqlite3.connect(BANCO)) as conexao:
         cursor = conexao.cursor()
         cursor.execute("PRAGMA table_info(produtos)")
@@ -100,7 +100,7 @@ def calcular_valor_liquido(loja, preco, modo_enjoei=None):
     preco = float(preco)
 
     if loja == 'olx':
-        # OLX - sem taxas
+      
         return {
             'valor_liquido': round(preco, 2),
             'taxa_total': 0,
@@ -108,7 +108,7 @@ def calcular_valor_liquido(loja, preco, modo_enjoei=None):
         }
 
     elif loja == 'facebook':
-        # Facebook - sem taxas
+       
         return {
             'valor_liquido': round(preco, 2),
             'taxa_total': 0,
@@ -116,13 +116,13 @@ def calcular_valor_liquido(loja, preco, modo_enjoei=None):
         }
 
     elif loja == 'enjoei':
-        # Enjoei - % + tarifa fixa por faixa + taxa de saque R$3
+       
         if modo_enjoei == 'turbinado':
             percentual = 0.18
         else:
-            percentual = 0.12  # classico
+            percentual = 0.12  
 
-        # Tarifa fixa por faixa de preço
+      
         if preco <= 15:
             tarifa_fixa = 2.50
         elif preco <= 50:
@@ -135,7 +135,7 @@ def calcular_valor_liquido(loja, preco, modo_enjoei=None):
             tarifa_fixa = 13.50
         elif preco <= 300:
             tarifa_fixa = 22.50
-        else:  # até 500
+        else:  
             tarifa_fixa = 25.00
 
         taxa_percentual = preco * percentual
@@ -162,7 +162,7 @@ def calcular_valor_liquido(loja, preco, modo_enjoei=None):
         elif preco <= 499.99:
             percentual = 0.14
             taxa_fixa = 26.00
-        else:  # 500+
+        else:  
             percentual = 0.14
             taxa_fixa = 26.00
 
@@ -186,9 +186,43 @@ def calcular_valor_liquido(loja, preco, modo_enjoei=None):
 
 @app.route("/ofertas", methods=["GET", "POST"])
 def ofertas():
+    resultado = None
+    erro = None
+    modo = ""
+    oferta = ""
+
     if request.method == "POST":
-        pass
-    return render_template("ofertas.html")
+        modo = request.form.get("modo", "").strip().lower()
+        oferta = request.form.get("oferta", "").strip()
+
+        if modo not in {"classico", "turbinado"}:
+            erro = "Selecione um modo válido do Enjoei."
+
+        else:
+            try:
+                preco = float(oferta)
+
+                if preco <= 0:
+                    erro = "A oferta precisa ser maior que zero."
+                else:
+                    resultado = calcular_valor_liquido(
+                        "enjoei",
+                        preco,
+                        modo
+                    )
+
+            except ValueError:
+                erro = "Digite um valor de oferta válido."
+
+    return render_template(
+        "ofertas.html",
+        resultado=resultado,
+        erro=erro,
+        modo=modo,
+        oferta=oferta
+    )
+
+
 
 @app.route("/produtos")
 def seus_produtos():
@@ -296,7 +330,6 @@ def alternar_vendido(produto_id):
     if not produto:
         return redirect(url_for("seus_produtos", busca=busca, filtro=filtro))
 
-    # Ao marcar como vendido, pedir loja e preço antes de alterar o status.
     if produto['vendido'] == 0:
         with closing(sqlite3.connect(BANCO)) as conexao:
             conexao.row_factory = sqlite3.Row
@@ -326,7 +359,6 @@ def alternar_vendido(produto_id):
             },
         )
     else:
-        # Se está marcando como NÃO VENDIDO (vendido = 1 -> 0), limpa info de venda
         with closing(sqlite3.connect(BANCO)) as conexao:
             conexao.execute("""
                 UPDATE produtos
@@ -345,7 +377,7 @@ def confirmar_venda(produto_id):
 
     loja_vendida = request.form.get("loja_vendida")
     preco_venda = request.form.get("preco_venda")
-    modo_enjoei = request.form.get("modo_enjoei")  # apenas para Enjoei
+    modo_enjoei = request.form.get("modo_enjoei")  
 
     lojas_validas = {"olx", "enjoei", "facebook", "shopee"}
     if loja_vendida not in lojas_validas or not preco_venda:
@@ -362,7 +394,6 @@ def confirmar_venda(produto_id):
     if loja_vendida != "enjoei":
         modo_enjoei = None
 
-    # Calcular valor líquido
     resultado = calcular_valor_liquido(loja_vendida, preco_venda, modo_enjoei)
 
     with closing(sqlite3.connect(BANCO)) as conexao:

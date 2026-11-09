@@ -672,3 +672,32 @@ button.selo-vendido:hover { background-color: var(--cinza-claro); }
 .acoes-modal .botao-filtro {
     padding: 10px 18px;
 }
+
+.resultado-oferta {
+    border: 2px solid var(--verde-agua-escuro);
+}
+
+.valor-liquido {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: var(--verde-agua-suave);
+    border-radius: var(--raio-md);
+    text-align: center;
+}
+
+.valor-liquido span {
+    color: var(--cinza-texto);
+    font-weight: 600;
+}
+
+.valor-liquido h2 {
+    color: var(--verde-petroleo);
+    font-size: 32px;
+    margin: 10px 0 0;
+}
+
+.resultado-oferta > p:last-child {
+    font-size: var(--fonte-sm);
+    line-height: 1.6;
+    color: var(--cinza-texto);
+}

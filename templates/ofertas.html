@@ -1,40 +1,107 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculo de Taxas</title>
+    <title>Ofertas - Marketplace Calculator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
     <header class="header">
-        <a href="{{ url_for('home') }}" class="home" title="Voltar para a página inicial">
+        <a href="{{ url_for('home') }}" class="home"
+           title="Voltar para a página inicial">
             <h1>Marketplace Calculator</h1>
         </a>
-         <form method='post' action='{{ url_for("sair") }}'>
-            <button type='submit'>Sair</button>
+
+        <form method="post" action="{{ url_for('sair') }}">
+            <button type="submit">Sair</button>
         </form>
     </header>
 
     <main class="container">
-    
+
         <section class="cartao">
-            <h2>Calcular Taxas de Ofertas</h2>
-            <p>Preencha os dados do produto para calcular se a oferta é rentável.</p>
+            <h2>Calcular Ofertas</h2>
+            <p>Descubra quanto você receberá com uma oferta no Enjoei.</p>
 
+            {% if erro %}
+                <p class="erro">{{ erro }}</p>
+            {% endif %}
 
-            <form action="/ofertas" method="POST">
+            <form action="{{ url_for('ofertas') }}" method="POST">
 
                 <div class="campo">
-                    <label for="nome">Selecione o produto:</label>
-                    <form action="/ofertas" method="POST">
-                        <select id="nome" name="nome" required>
-                            <option value="">Selecione um produto</option>
-                            {% for produto in produtos %}
-                                <option value="{{ produto.nome }}">{{ produto.nome }}</option>
-                            {% endfor %}
-                        </select>
+                    <label for="modo">Modo do anúncio:</label>
+
+                    <select id="modo" name="modo" required>
+                        <option value="">Selecione o modo</option>
+
+                        <option value="classico"
+                            {% if modo == 'classico' %}selected{% endif %}>
+                            Clássico (12%)
+                        </option>
+
+                        <option value="turbinado"
+                            {% if modo == 'turbinado' %}selected{% endif %}>
+                            Turbinado (18%)
+                        </option>
+                    </select>
                 </div>
+
+                <div class="campo">
+                    <label for="oferta">Valor ofertado (R$):</label>
+
+                    <input
+                        type="number"
+                        id="oferta"
+                        name="oferta"
+                        min="0.01"
+                        step="0.01"
+                        placeholder="Ex.: 50,00"
+                        value="{{ oferta }}"
+                        required
+                    >
+                </div>
+
+                <button type="submit">Calcular oferta</button>
+
+            </form>
+        </section>
+
+        {% if resultado %}
+        <section class="cartao resultado-oferta">
+
+            <h2>Resultado da oferta</h2>
+
+            <p>Valor oferecido: <strong>
+                R$ {{ "%.2f"|format(oferta|float) }}
+            </strong></p>
+
+            <p>Modo: <strong>
+                {{ modo|capitalize }}
+            </strong></p>
+
+            <div class="valor-liquido">
+                <span>Você receberá:</span>
+
+                <h2>
+                    R$ {{ "%.2f"|format(resultado.valor_liquido) }}
+                </h2>
+            </div>
+
+            <p>{{ resultado.detalhes }}</p>
+
+        </section>
+        {% endif %}
+
+    </main>
+
+    <footer class="footer">
+        <h2>Marketplace Calculator</h2>
+        <p>© 2026 Marketplace Calculator. Todos os direitos reservados.</p>
+    </footer>
+
 </body>
 </html>
